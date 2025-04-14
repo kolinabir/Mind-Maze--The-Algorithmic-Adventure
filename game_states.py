@@ -13,6 +13,8 @@ from settings import (
 )
 from screens.home_screen import HomeScreen
 from screens.level_select import LevelSelectScreen
+from screens.settings_screen import SettingsScreen
+from screens.credits_screen import CreditsScreen
 from ui.screen_manager import ScreenManager
 from levels.maze_level import MazeLevel
 from levels.jug_level import JugLevel
@@ -164,45 +166,37 @@ class PlayState(GameState):
 class SettingsState(GameState):
     def __init__(self, game_engine, asset_manager):
         super().__init__(game_engine, asset_manager)
+        self.settings_screen = SettingsScreen(game_engine, asset_manager)
 
     def enter(self, **kwargs):
         print("Entering settings state")
 
     def handle_event(self, event):
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            self.game_engine.state_manager.change_state(MENU_STATE)
+        self.settings_screen.handle_event(event)
+
+    def update(self, dt):
+        self.settings_screen.update(dt)
 
     def render(self, screen):
-        font = pygame.font.SysFont(None, 36)
-        text = font.render(
-            "Settings Screen (Press ESC to return to menu)", True, (255, 255, 255)
-        )
-        text_rect = text.get_rect(
-            center=(screen.get_width() / 2, screen.get_height() / 2)
-        )
-        screen.blit(text, text_rect)
+        self.settings_screen.render(screen)
 
 
 class CreditsState(GameState):
     def __init__(self, game_engine, asset_manager):
         super().__init__(game_engine, asset_manager)
+        self.credits_screen = CreditsScreen(game_engine, asset_manager)
 
     def enter(self, **kwargs):
         print("Entering credits state")
 
     def handle_event(self, event):
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            self.game_engine.state_manager.change_state(MENU_STATE)
+        self.credits_screen.handle_event(event)
+
+    def update(self, dt):
+        self.credits_screen.update(dt)
 
     def render(self, screen):
-        font = pygame.font.SysFont(None, 36)
-        text = font.render(
-            "Credits Screen (Press ESC to return to menu)", True, (255, 255, 255)
-        )
-        text_rect = text.get_rect(
-            center=(screen.get_width() / 2, screen.get_height() / 2)
-        )
-        screen.blit(text, text_rect)
+        self.credits_screen.render(screen)
 
 
 class GameStateManager:
