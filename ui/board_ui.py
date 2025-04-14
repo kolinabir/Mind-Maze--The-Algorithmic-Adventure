@@ -125,6 +125,9 @@ class GameBoard:
     
     def is_special_tile(self, row, col):
         """Check if a cell is a special tile"""
+        if not self.special_tiles:
+            return False
+            
         for r, c, type in self.special_tiles:
             if r == row and c == col:
                 return True

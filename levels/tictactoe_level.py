@@ -270,15 +270,22 @@ class TicTacToeLevel(BaseLevel):
                 # Get board state
                 board_state = self.board.get_state()
                 
-                # Get AI move
-                best_move = self.ai.get_best_move(board_state, self.ai_symbol, self.player_symbol)
-                
-                if best_move:
-                    row, col = best_move
-                    # Make the AI move
-                    self.make_move(row, col, self.ai_symbol)
+                # Check if there are any valid moves first
+                empty_cells = self.board.get_empty_cells()
+                if empty_cells:
+                    # Get AI move
+                    best_move = self.ai.get_best_move(board_state, self.ai_symbol, self.player_symbol)
+                    
+                    if best_move:
+                        row, col = best_move
+                        # Make the AI move
+                        self.make_move(row, col, self.ai_symbol)
+                    else:
+                        # Fallback - pick a random empty cell if AI couldn't find a good move
+                        row, col = random.choice(empty_cells)
+                        self.make_move(row, col, self.ai_symbol)
                 else:
-                    # No valid moves (shouldn't happen in tic-tac-toe unless board is full)
+                    # No valid moves (board is full)
                     self.game_over = True
         
         # Update visualizer if active
@@ -298,9 +305,11 @@ class TicTacToeLevel(BaseLevel):
         self.board.render(screen)
         
         # Draw visualization if active
-        if self.show_visualization and self.visualization_data and not self.game_over:
-            vis_rect = pygame.Rect(SCREEN_WIDTH // 2 - 250, SCREEN_HEIGHT - 250, 500, 200)
-            self.visualizer.render(screen, vis_rect, self.visualization_data)
+        if self.show_visualization and self.visualization_data:
+            vis_rect = pygame.Rect(SCREEN_WIDTH // 2 - 250, SCREEN_HEIGHT - 230, 500, 180)
+            # Make sure visualizer is properly initialized
+            if hasattr(self, 'visualizer'):
+                self.visualizer.render(screen, vis_rect, self.visualization_data)
         
         # Draw UI buttons
         self._draw_ui_buttons(screen)

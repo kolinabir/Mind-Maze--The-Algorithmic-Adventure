@@ -266,6 +266,13 @@ class MinimaxAI:
         size = len(board)
         score = 0
         
+        # Check for immediate win or loss first
+        winner = self._check_winner(board)
+        if winner == ai_symbol:
+            return 10
+        elif winner == player_symbol:
+            return -10
+        
         # Check rows, columns, diagonals for potential wins
         
         # Evaluate rows
