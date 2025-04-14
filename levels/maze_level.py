@@ -71,12 +71,14 @@ class MazeLevel(BaseLevel):
     
     def pixel_to_cell(self, x, y):
         """Convert pixel coordinates to cell coordinates"""
-        cell_x = (x - self.maze_offset_x) // self.cell_size
-        cell_y = (y - self.maze_offset_y) // self.cell_size
+        # Convert to integers for safe division
+        x, y = int(x), int(y)
+        cell_x = int((x - self.maze_offset_x) // self.cell_size)
+        cell_y = int((y - self.maze_offset_y) // self.cell_size)
         
-        # Ensure within grid bounds and convert to int
-        cell_x = max(0, min(int(cell_x), self.grid_width - 1))
-        cell_y = max(0, min(int(cell_y), self.grid_height - 1))
+        # Ensure within grid bounds
+        cell_x = max(0, min(cell_x, self.grid_width - 1))
+        cell_y = max(0, min(cell_y, self.grid_height - 1))
         
         return (cell_x, cell_y)
     
@@ -232,6 +234,7 @@ class MazeLevel(BaseLevel):
         # Update visualization
         self.current_path = path
         self.visited_cells = visited
+        print(f"Path found with {len(visited)} cells visited")
     
     def update(self, dt):
         """Update maze level logic"""
@@ -277,6 +280,10 @@ class MazeLevel(BaseLevel):
                 
                 pygame.draw.rect(screen, color, cell_rect)
                 pygame.draw.rect(screen, (50, 50, 50), cell_rect, 1)  # Grid lines
+        
+        # If visualization is active, draw path
+        if self.show_algorithm and self.current_path:
+            self.visualizer.render_path(screen, self.current_path, self.cell_to_pixel)
         
         # Draw teleporters
         for teleporter in self.teleporters:

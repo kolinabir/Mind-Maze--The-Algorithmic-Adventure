@@ -3,7 +3,8 @@ import math
 
 class Teleporter:
     def __init__(self, cell_pos, position, color=(255, 0, 255)):
-        self.cell_pos = cell_pos  # Grid coordinates
+        # Ensure cell_pos is a tuple of integers
+        self.cell_pos = (int(cell_pos[0]), int(cell_pos[1]))
         self.position = position  # Center pixel position
         self.color = color
         self.radius = 10
