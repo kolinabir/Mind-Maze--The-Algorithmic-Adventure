@@ -1,0 +1,22 @@
+{
+  "profile_name": "Default Profile",
+  "created_date": "2025-04-15 01:59:48",
+  "last_played": "2025-04-15 02:00:17",
+  "total_play_time": 28.37580180168152,
+  "session_start": 1744660817.259019,
+  "completed_levels": [],
+  "unlocked_levels": [
+    0
+  ],
+  "high_scores": {},
+  "settings": {
+    "sound_volume": 0.7,
+    "music_volume": 0.5,
+    "fullscreen": false,
+    "show_hints": true,
+    "difficulty": "normal"
+  },
+  "achievements": {},
+  "tutorial_completed": false,
+  "current_level": null
+}

@@ -30,13 +30,13 @@ class IntegrationLevel(BaseLevel):
 
         # Initialize the game state
         self.reset()
-        
+
         # Instructions modal
         self.show_instructions = True
         self.instructions_read = False
 
         self.win_rate = 50.0  # Initial win rate percentage
-        self.moves_made = 0   # Track total moves made
+        self.moves_made = 0  # Track total moves made
         self.optimal_path_length = 0  # Length of optimal path
 
     def reset(self):
@@ -266,7 +266,7 @@ class IntegrationLevel(BaseLevel):
             hunter_count = min(count // 2 + self.difficulty, len(empty_cells) // 3)
             patrol_count = count // 3
             random_count = count - hunter_count - patrol_count
-            
+
             # Place hunters (more dangerous)
             for i in range(min(hunter_count, len(empty_cells))):
                 pos = random.choice(empty_cells)
@@ -279,7 +279,7 @@ class IntegrationLevel(BaseLevel):
                 }
                 self.enemies.append(enemy)
                 empty_cells.remove(pos)
-            
+
             # Place patrol enemies
             for i in range(min(patrol_count, len(empty_cells))):
                 pos = random.choice(empty_cells)
@@ -380,11 +380,13 @@ class IntegrationLevel(BaseLevel):
         """Handle user input"""
         # Handle instructions modal first
         if self.show_instructions:
-            if event.type == pygame.KEYDOWN or (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1):
+            if event.type == pygame.KEYDOWN or (
+                event.type == pygame.MOUSEBUTTONDOWN and event.button == 1
+            ):
                 self.show_instructions = False
                 self.instructions_read = True
                 return
-                
+
         if self.game_over:
             # Allow restart with any key
             if event.type == pygame.KEYDOWN:
@@ -456,7 +458,7 @@ class IntegrationLevel(BaseLevel):
             self.player_pos = (new_y, new_x)
             self.moves_remaining -= 1
             self.moves_made += 1
-            
+
             # Update win rate calculation
             self._update_win_rate()
 
@@ -820,23 +822,27 @@ class IntegrationLevel(BaseLevel):
         )
 
         # Win rate - add to display
-        win_color = GREEN if self.win_rate > 60 else YELLOW if self.win_rate > 30 else RED
-        win_rate_text = self.font.render(f"Win Rate: {self.win_rate:.1f}%", True, win_color)
+        win_color = (
+            GREEN if self.win_rate > 60 else YELLOW if self.win_rate > 30 else RED
+        )
+        win_rate_text = self.font.render(
+            f"Win Rate: {self.win_rate:.1f}%", True, win_color
+        )
         screen.blit(win_rate_text, (board_left, stats_y + 30))
-        
+
         # Draw progress bar for win rate
         bar_width = 100
         bar_height = 8
         bar_x = board_left + win_rate_text.get_width() + 20
         bar_y = stats_y + 36
-        
+
         # Background bar
         pygame.draw.rect(screen, (60, 60, 60), (bar_x, bar_y, bar_width, bar_height))
-        
+
         # Fill bar based on win rate
         fill_width = int(bar_width * (self.win_rate / 100.0))
         pygame.draw.rect(screen, win_color, (bar_x, bar_y, fill_width, bar_height))
-        
+
         # Border
         pygame.draw.rect(screen, WHITE, (bar_x, bar_y, bar_width, bar_height), 1)
 
@@ -1042,30 +1048,32 @@ class IntegrationLevel(BaseLevel):
         # Draw instructions modal
         if self.show_instructions:
             self._draw_instructions(screen)
-    
+
     def _draw_instructions(self, screen):
         """Draw instructions modal"""
         # Semi-transparent overlay
         overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 200))
         screen.blit(overlay, (0, 0))
-        
+
         # Instructions panel
         panel_width = 600
         panel_height = 400
         panel_left = (SCREEN_WIDTH - panel_width) // 2
         panel_top = (SCREEN_HEIGHT - panel_height) // 2
-        
+
         # Draw panel background
-        pygame.draw.rect(screen, (40, 50, 70), 
-                       (panel_left, panel_top, panel_width, panel_height))
-        pygame.draw.rect(screen, LIGHT_BLUE, 
-                       (panel_left, panel_top, panel_width, panel_height), 3)
-        
+        pygame.draw.rect(
+            screen, (40, 50, 70), (panel_left, panel_top, panel_width, panel_height)
+        )
+        pygame.draw.rect(
+            screen, LIGHT_BLUE, (panel_left, panel_top, panel_width, panel_height), 3
+        )
+
         # Draw title
         title = self.title_font.render("HOW TO PLAY", True, WHITE)
         screen.blit(title, (SCREEN_WIDTH // 2 - title.get_width() // 2, panel_top + 20))
-        
+
         # Draw instructions text
         instructions = [
             "Welcome to Pathfinder Adventure!",
@@ -1089,15 +1097,19 @@ class IntegrationLevel(BaseLevel):
             "• Orange: Patrol enemies that follow fixed paths",
             "• Purple: Random movement enemies",
             "",
-            "Press any key to start playing!"
+            "Press any key to start playing!",
         ]
-        
+
         y_pos = panel_top + 70
         for line in instructions:
             if line.startswith("•"):
                 text = self.font.render(line, True, LIGHT_BLUE)
                 screen.blit(text, (panel_left + 35, y_pos))
-            elif line.startswith("OBJECTIVE:") or line.startswith("CONTROLS:") or line.startswith("ENEMIES:"):
+            elif (
+                line.startswith("OBJECTIVE:")
+                or line.startswith("CONTROLS:")
+                or line.startswith("ENEMIES:")
+            ):
                 text = self.title_font.render(line, True, YELLOW)
                 screen.blit(text, (panel_left + 20, y_pos))
             elif line == "":
@@ -1117,22 +1129,24 @@ class IntegrationLevel(BaseLevel):
         # 4. Proximity to enemies (closer = lower rate)
         # 5. Number of collected items (more = higher rate)
         # 6. Power-ups available (more = higher rate)
-        
+
         # Base win rate starts at 50%
         base_rate = 50.0
-        
+
         # Factor 1: Distance to target
         current_path = self._find_path_astar(self.player_pos, self.target_pos)
         distance_to_target = len(current_path) if current_path else self.grid_size * 2
-        
-        path_factor = 20.0 * (1 - (distance_to_target / (self.optimal_path_length * 1.5)))
-        
+
+        path_factor = 20.0 * (
+            1 - (distance_to_target / (self.optimal_path_length * 1.5))
+        )
+
         # Factor 2: Remaining moves
         move_factor = 10.0 * (self.moves_remaining / 100.0)
-        
+
         # Factor 3: Remaining time
         time_factor = 10.0 * (self.time_remaining / self.time_limit)
-        
+
         # Factor 4: Enemy proximity
         enemy_danger = 0
         for enemy in self.enemies:
@@ -1142,19 +1156,30 @@ class IntegrationLevel(BaseLevel):
                 if enemy["type"] == "hunter":
                     enemy_danger += (5 - distance) * 2
                 else:
-                    enemy_danger += (5 - distance)
+                    enemy_danger += 5 - distance
         enemy_factor = -10.0 * (enemy_danger / 20.0)
         enemy_factor = max(enemy_factor, -15.0)  # Cap negative impact
-        
+
         # Factor 5: Collected items
         collected_count = sum(1 for item in self.collectibles if item["collected"])
         total_items = len(self.collectibles)
         collection_factor = 5.0 * (collected_count / max(total_items, 1))
-        
+
         # Factor 6: Available power-ups
         power_up_count = sum(self.power_ups.values())
         power_up_factor = 5.0 * (power_up_count / 6.0)  # Assuming max ~6 power-ups
-        
+
         # Calculate total win rate
-        self.win_rate = min(100.0, max(0.0, base_rate + path_factor + move_factor + 
-                           time_factor + enemy_factor + collection_factor + power_up_factor))
+        self.win_rate = min(
+            100.0,
+            max(
+                0.0,
+                base_rate
+                + path_factor
+                + move_factor
+                + time_factor
+                + enemy_factor
+                + collection_factor
+                + power_up_factor,
+            ),
+        )
