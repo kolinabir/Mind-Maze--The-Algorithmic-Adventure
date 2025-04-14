@@ -7,6 +7,7 @@ from screens.home_screen import HomeScreen
 from screens.level_select import LevelSelectScreen
 from ui.screen_manager import ScreenManager
 from levels.maze_level import MazeLevel
+from levels.jug_level import JugLevel
 
 class GameState:
     def __init__(self, game_engine, asset_manager):
@@ -76,7 +77,8 @@ class PlayState(GameState):
         
         # Initialize all level types
         self.levels = {
-            MAZE_LEVEL: MazeLevel(game_engine, asset_manager)
+            MAZE_LEVEL: MazeLevel(game_engine, asset_manager),
+            WATER_JUG_LEVEL: JugLevel(game_engine, asset_manager)
             # Other levels will be added later
         }
     

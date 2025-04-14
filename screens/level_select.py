@@ -25,7 +25,7 @@ class LevelSelectScreen:
         # Define levels
         self.levels = [
             Level("Maze Explorer", "Navigate through a maze using BFS or DFS algorithms", True),
-            Level("Water Jug Challenge", "Solve the classic water jug problem with algorithmic thinking", False),
+            Level("Water Jug Challenge", "Solve the classic water jug problem with algorithmic thinking", True),  # Set to True to unlock
             Level("Tic-Tac-Toe Master", "Play against an AI using the Minimax algorithm", False),
             Level("Strategy Game", "Face a challenging opponent with Alpha-Beta pruning", False),
             Level("Final Integration", "Use all algorithms in the ultimate challenge", False),
@@ -87,6 +87,7 @@ class LevelSelectScreen:
     def start_selected_level(self):
         if self.selected_level is not None and self.levels[self.selected_level].unlocked:
             level_type = self.level_types[self.selected_level]
+            print(f"Starting level: {level_type}")  # Debug print to verify correct level type
             self.game_engine.state_manager.change_state(PLAY_STATE, level_type=level_type)
     
     def go_back(self):
