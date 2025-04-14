@@ -20,12 +20,14 @@ Mind Maze is a 2D puzzle game built with Pygame that features multiple algorithm
 ### Setup
 
 1. Clone this repository:
+
    ```
    git clone https://github.com/yourusername/mind-maze.git
    cd mind-maze
    ```
 
 2. Create a virtual environment (recommended):
+
    ```
    # On Windows
    python -m venv venv
@@ -44,6 +46,7 @@ Mind Maze is a 2D puzzle game built with Pygame that features multiple algorithm
 ## Running the Game
 
 After installing the requirements, run the game using:
+
 ```
 python main.py
 ```
@@ -51,6 +54,7 @@ python main.py
 ## How to Play
 
 ### Maze Explorer
+
 - Use arrow keys to navigate through the maze
 - Press Space to toggle algorithm visualization
 - Click the algorithm button to switch between BFS and DFS
@@ -58,6 +62,7 @@ python main.py
 - Reach the red square to complete the level
 
 ### Water Jug Challenge
+
 - Click on a jug to select it
 - Use Fill, Empty, or Pour actions to manipulate the water
 - Measure the exact target amount in any jug to win
@@ -65,9 +70,10 @@ python main.py
 - Complete the puzzle within the limited number of moves
 
 ### Controls
+
 - **Arrow Keys**: Navigate in mazes
 - **Mouse**: Select jugs, buttons, and UI elements
-- **Space**: Toggle algorithm visualization 
+- **Space**: Toggle algorithm visualization
 - **Escape**: Return to level selection
 
 ## Project Structure
@@ -93,6 +99,7 @@ Mind Maze/
 This project is structured to implement different algorithms as engaging puzzle experiences. Each level showcases a different algorithm with interactive visualizations to help players understand how they work.
 
 ### Current Implementation Status:
+
 - [x] Part 1: Project Setup and Basic Structure
 - [x] Part 2: Home Screen and UI Design
 - [x] Part 3: Maze Generation and Navigation (BFS/DFS)
@@ -126,6 +133,7 @@ The Strategy Game level features:
 ### Understanding Alpha-Beta Pruning
 
 The visualization panel shows:
+
 - Alpha (red) and beta (blue) values that represent the best scores for each player
 - When alpha becomes greater than or equal to beta, branches are pruned
 - Pruned branches appear in red during the animation

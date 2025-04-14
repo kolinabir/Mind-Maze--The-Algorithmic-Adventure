@@ -1,5 +1,6 @@
 import pygame
 import sys
+
 # Update import to use actual file location
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, TITLE
 from game_engine import GameEngine
