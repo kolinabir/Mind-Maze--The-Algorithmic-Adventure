@@ -6,6 +6,7 @@ from settings import (
 from screens.home_screen import HomeScreen
 from screens.level_select import LevelSelectScreen
 from ui.screen_manager import ScreenManager
+from levels.maze_level import MazeLevel
 
 class GameState:
     def __init__(self, game_engine, asset_manager):
@@ -72,37 +73,65 @@ class PlayState(GameState):
         super().__init__(game_engine, asset_manager)
         self.current_level = None
         self.level_type = None
+        
+        # Initialize all level types
+        self.levels = {
+            MAZE_LEVEL: MazeLevel(game_engine, asset_manager)
+            # Other levels will be added later
+        }
     
     def enter(self, **kwargs):
         print("Entering play state")
         self.level_type = kwargs.get("level_type", MAZE_LEVEL)
-        # Later this will load the appropriate level class
+        
+        # Set the current level based on type
+        if self.level_type in self.levels:
+            self.current_level = self.levels[self.level_type]
+            # Reset the level each time we enter
+            self.current_level.reset()
+        else:
+            print(f"Warning: Level type {self.level_type} not implemented yet")
     
     def handle_event(self, event):
-        # Placeholder for handling events in the play state
+        # Return to level select with ESC
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             self.game_engine.state_manager.change_state(LEVEL_SELECT_STATE)
+        
+        # Pass events to current level
+        if self.current_level:
+            self.current_level.handle_event(event)
     
     def update(self, dt):
-        # Placeholder for game update logic
-        pass
+        if self.current_level:
+            self.current_level.update(dt)
+            
+            # Check for level completion
+            if self.current_level.completed:
+                # Update user preferences to mark level as completed
+                # This will be implemented when we add the user preferences system
+                pass
     
     def render(self, screen):
-        # Placeholder for game rendering
-        font = pygame.font.SysFont(None, 36)
-        
-        # Display different text based on level type
-        level_name = {
-            MAZE_LEVEL: "Maze Explorer",
-            WATER_JUG_LEVEL: "Water Jug Challenge",
-            TICTACTOE_LEVEL: "Tic-Tac-Toe Master",
-            STRATEGY_LEVEL: "Strategy Game",
-            FINAL_LEVEL: "Final Integration Challenge"
-        }.get(self.level_type, "Unknown Level")
-        
-        text = font.render(f'Playing: {level_name} (Press ESC to return)', True, (255, 255, 255))
-        text_rect = text.get_rect(center=(screen.get_width()/2, screen.get_height()/2))
-        screen.blit(text, text_rect)
+        if self.current_level:
+            self.current_level.render(screen)
+        else:
+            # Fallback for unimplemented levels
+            font = pygame.font.SysFont(None, 36)
+            level_name = {
+                MAZE_LEVEL: "Maze Explorer",
+                WATER_JUG_LEVEL: "Water Jug Challenge",
+                TICTACTOE_LEVEL: "Tic-Tac-Toe Master",
+                STRATEGY_LEVEL: "Strategy Game",
+                FINAL_LEVEL: "Final Integration Challenge"
+            }.get(self.level_type, "Unknown Level")
+            
+            text = font.render(f'Level type "{level_name}" not implemented yet', True, (255, 255, 255))
+            text_rect = text.get_rect(center=(screen.get_width()/2, screen.get_height()/2))
+            screen.blit(text, text_rect)
+            
+            sub_text = font.render('Press ESC to return to level select', True, (255, 255, 255))
+            sub_rect = sub_text.get_rect(center=(screen.get_width()/2, screen.get_height()/2 + 50))
+            screen.blit(sub_text, sub_rect)
 
 class SettingsState(GameState):
     def __init__(self, game_engine, asset_manager):
