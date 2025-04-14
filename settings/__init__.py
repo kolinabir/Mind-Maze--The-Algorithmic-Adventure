@@ -1,6 +1,3 @@
-# Import all settings from the settings package to maintain compatibility
-from settings import *
-
 # Screen settings
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
