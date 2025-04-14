@@ -103,6 +103,34 @@ This project is structured to implement different algorithms as engaging puzzle 
 - [ ] Part 8: Graphics, Audio, and Polish
 - [ ] Part 9: Save System and Tutorial
 
+## Part 6: Strategy Game with Alpha-Beta Pruning
+
+The Strategy Game level features:
+
+1. **Alpha-Beta Pruning Algorithm**: An optimized search algorithm that reduces the number of nodes evaluated in the minimax search tree
+2. **Pruning Visualization**: Interactive visualization showing how alpha-beta pruning eliminates unnecessary branches
+3. **Strategy Board Game**: A challenging game where pieces move across the board toward the opponent's side
+4. **Power-Up System**: Special items that give players advantages like extra moves or protected pieces
+5. **Move Timer**: Time pressure element that requires quick decision making
+6. **Multiple Difficulty Levels**: Four difficulty settings that adjust AI search depth and time limits
+
+### How to Play
+
+- Select your pieces with a mouse click
+- Yellow highlights show valid moves
+- Capture opponent pieces by moving diagonally onto them
+- Collect power-ups for special abilities
+- Win by reaching the opponent's side or eliminating all opponent pieces
+- Be careful not to run out of time!
+
+### Understanding Alpha-Beta Pruning
+
+The visualization panel shows:
+- Alpha (red) and beta (blue) values that represent the best scores for each player
+- When alpha becomes greater than or equal to beta, branches are pruned
+- Pruned branches appear in red during the animation
+- Statistics show how effective the pruning is at reducing the search space
+
 ## License
 
 [Include your chosen license here]

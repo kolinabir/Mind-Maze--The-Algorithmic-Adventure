@@ -10,9 +10,10 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
-GRAY = (128, 128, 128)
+GRAY = (128, 128, 128)  # This should already exist, but confirming it's there
 LIGHT_BLUE = (173, 216, 230)
 DARK_BLUE = (0, 0, 139)
+YELLOW = (255, 255, 0)
 
 # Game states
 MENU_STATE = "menu"
