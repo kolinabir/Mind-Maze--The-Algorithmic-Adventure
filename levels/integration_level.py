@@ -35,6 +35,10 @@ class IntegrationLevel(BaseLevel):
         self.show_instructions = True
         self.instructions_read = False
 
+        self.win_rate = 50.0  # Initial win rate percentage
+        self.moves_made = 0   # Track total moves made
+        self.optimal_path_length = 0  # Length of optimal path
+
     def reset(self):
         """Reset the level to initial state"""
         super().reset()
@@ -82,6 +86,10 @@ class IntegrationLevel(BaseLevel):
         self.power_ups = {"teleport": 1, "reveal_path": 2, "freeze_enemies": 1}
         self.freeze_time = 0
         self.reveal_time = 0
+
+        # Win rate tracking
+        self.win_rate = 50.0
+        self.moves_made = 0
 
     def set_difficulty(self, level):
         """Set the difficulty level"""
@@ -252,54 +260,72 @@ class IntegrationLevel(BaseLevel):
                     if abs(y - self.player_pos[0]) + abs(x - self.player_pos[1]) > 5:
                         empty_cells.append((y, x))
 
-        # Place enemies
+        # Place enemies with more hunters
         if empty_cells:
-            for i in range(min(count, len(empty_cells))):
+            # Adjust distribution: more hunters but keep game winnable
+            hunter_count = min(count // 2 + self.difficulty, len(empty_cells) // 3)
+            patrol_count = count // 3
+            random_count = count - hunter_count - patrol_count
+            
+            # Place hunters (more dangerous)
+            for i in range(min(hunter_count, len(empty_cells))):
                 pos = random.choice(empty_cells)
-
-                # Different enemy types
-                enemy_type = random.choice(["hunter", "patrol", "random"])
-
                 enemy = {
                     "pos": pos,
-                    "type": enemy_type,
+                    "type": "hunter",
+                    "move_timer": 0,
+                    "path": [],
+                    "patrol_points": [],
+                }
+                self.enemies.append(enemy)
+                empty_cells.remove(pos)
+            
+            # Place patrol enemies
+            for i in range(min(patrol_count, len(empty_cells))):
+                pos = random.choice(empty_cells)
+                enemy = {
+                    "pos": pos,
+                    "type": "patrol",
                     "move_timer": 0,
                     "path": [],
                     "patrol_points": [],
                 }
 
                 # For patrol enemies, set up patrol points
-                if enemy_type == "patrol":
-                    # Find patrol points
-                    patrol_points = [pos]
-                    for _ in range(3):
-                        found = False
-                        for attempt in range(20):
-                            dy, dx = random.choice([(0, 1), (1, 0), (0, -1), (-1, 0)])
-                            ny, nx = (
-                                patrol_points[-1][0] + dy,
-                                patrol_points[-1][1] + dx,
-                            )
+                # Find patrol points
+                patrol_points = [pos]
+                for _ in range(3):
+                    found = False
+                    for attempt in range(20):
+                        dy, dx = random.choice([(0, 1), (1, 0), (0, -1), (-1, 0)])
+                        ny, nx = (
+                            patrol_points[-1][0] + dy,
+                            patrol_points[-1][1] + dx,
+                        )
 
-                            # Check if valid cell
-                            if (
-                                0 < ny < self.grid_size - 1
-                                and 0 < nx < self.grid_size - 1
-                                and self.grid[ny][nx] == 0
-                            ):
-                                patrol_points.append((ny, nx))
-                                found = True
-                                break
-
-                        if not found:
+                        # Check if valid cell
+                        if (
+                            0 < ny < self.grid_size - 1
+                            and 0 < nx < self.grid_size - 1
+                            and self.grid[ny][nx] == 0
+                        ):
+                            patrol_points.append((ny, nx))
+                            found = True
                             break
 
-                    enemy["patrol_points"] = patrol_points
-                    enemy["patrol_index"] = 0
-                    enemy["patrol_direction"] = 1
+                    if not found:
+                        break
+
+                enemy["patrol_points"] = patrol_points
+                enemy["patrol_index"] = 0
+                enemy["patrol_direction"] = 1
 
                 self.enemies.append(enemy)
                 empty_cells.remove(pos)
+
+        # Calculate initial optimal path length for win rate calculation
+        path = self._find_path_astar(self.player_pos, self.target_pos)
+        self.optimal_path_length = len(path) if path else self.grid_size * 2
 
     def _find_path_astar(self, start, end):
         """Find path using A* algorithm"""
@@ -429,6 +455,10 @@ class IntegrationLevel(BaseLevel):
             # Move player
             self.player_pos = (new_y, new_x)
             self.moves_remaining -= 1
+            self.moves_made += 1
+            
+            # Update win rate calculation
+            self._update_win_rate()
 
             # Check for collectibles
             self._check_collectibles()
@@ -789,6 +819,27 @@ class IntegrationLevel(BaseLevel):
             score_text, (board_left + board_width - score_text.get_width(), stats_y)
         )
 
+        # Win rate - add to display
+        win_color = GREEN if self.win_rate > 60 else YELLOW if self.win_rate > 30 else RED
+        win_rate_text = self.font.render(f"Win Rate: {self.win_rate:.1f}%", True, win_color)
+        screen.blit(win_rate_text, (board_left, stats_y + 30))
+        
+        # Draw progress bar for win rate
+        bar_width = 100
+        bar_height = 8
+        bar_x = board_left + win_rate_text.get_width() + 20
+        bar_y = stats_y + 36
+        
+        # Background bar
+        pygame.draw.rect(screen, (60, 60, 60), (bar_x, bar_y, bar_width, bar_height))
+        
+        # Fill bar based on win rate
+        fill_width = int(bar_width * (self.win_rate / 100.0))
+        pygame.draw.rect(screen, win_color, (bar_x, bar_y, fill_width, bar_height))
+        
+        # Border
+        pygame.draw.rect(screen, WHITE, (bar_x, bar_y, bar_width, bar_height), 1)
+
         # Moves
         moves_text = self.font.render(f"Moves: {self.moves_remaining}", True, WHITE)
         screen.blit(
@@ -1023,6 +1074,7 @@ class IntegrationLevel(BaseLevel):
             "• Navigate through the maze to reach the target (red square)",
             "• Collect items (yellow circles) to earn points and power-ups",
             "• Avoid enemies that will cost you points and moves",
+            "• Watch your Win Rate to gauge your chances of success",
             "",
             "CONTROLS:",
             "• Arrow Keys: Move your character",
@@ -1055,3 +1107,54 @@ class IntegrationLevel(BaseLevel):
                 text = self.font.render(line, True, WHITE)
                 screen.blit(text, (panel_left + 20, y_pos))
             y_pos += 20
+
+    def _update_win_rate(self):
+        """Calculate real-time win rate based on player's situation"""
+        # Several factors determine win rate:
+        # 1. Distance to target (closer = higher rate)
+        # 2. Remaining moves (more = higher rate)
+        # 3. Remaining time (more = higher rate)
+        # 4. Proximity to enemies (closer = lower rate)
+        # 5. Number of collected items (more = higher rate)
+        # 6. Power-ups available (more = higher rate)
+        
+        # Base win rate starts at 50%
+        base_rate = 50.0
+        
+        # Factor 1: Distance to target
+        current_path = self._find_path_astar(self.player_pos, self.target_pos)
+        distance_to_target = len(current_path) if current_path else self.grid_size * 2
+        
+        path_factor = 20.0 * (1 - (distance_to_target / (self.optimal_path_length * 1.5)))
+        
+        # Factor 2: Remaining moves
+        move_factor = 10.0 * (self.moves_remaining / 100.0)
+        
+        # Factor 3: Remaining time
+        time_factor = 10.0 * (self.time_remaining / self.time_limit)
+        
+        # Factor 4: Enemy proximity
+        enemy_danger = 0
+        for enemy in self.enemies:
+            ey, ex = enemy["pos"]
+            distance = abs(ey - self.player_pos[0]) + abs(ex - self.player_pos[1])
+            if distance < 5:
+                if enemy["type"] == "hunter":
+                    enemy_danger += (5 - distance) * 2
+                else:
+                    enemy_danger += (5 - distance)
+        enemy_factor = -10.0 * (enemy_danger / 20.0)
+        enemy_factor = max(enemy_factor, -15.0)  # Cap negative impact
+        
+        # Factor 5: Collected items
+        collected_count = sum(1 for item in self.collectibles if item["collected"])
+        total_items = len(self.collectibles)
+        collection_factor = 5.0 * (collected_count / max(total_items, 1))
+        
+        # Factor 6: Available power-ups
+        power_up_count = sum(self.power_ups.values())
+        power_up_factor = 5.0 * (power_up_count / 6.0)  # Assuming max ~6 power-ups
+        
+        # Calculate total win rate
+        self.win_rate = min(100.0, max(0.0, base_rate + path_factor + move_factor + 
+                           time_factor + enemy_factor + collection_factor + power_up_factor))
