@@ -131,6 +131,18 @@ The visualization panel shows:
 - Pruned branches appear in red during the animation
 - Statistics show how effective the pruning is at reducing the search space
 
+## Part 7: Final Integration Challenge
+
+The Final Integration Challenge combines all the algorithms you've learned into a comprehensive series of puzzles:
+
+- **Algorithm Switching**: Analyze each challenge and choose the right algorithm
+- **Mixed Challenges**: Tackle a variety of puzzle types requiring different algorithms
+- **Progressive Difficulty**: Face increasingly complex challenges
+- **Score System**: Earn points based on speed and algorithm selection
+- **Algorithm Visualizations**: See how different algorithms work together
+
+This culminating level tests your understanding of all the algorithms covered in the game, requiring you to apply the right technique to each situation.
+
 ## License
 
 [Include your chosen license here]

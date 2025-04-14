@@ -10,6 +10,7 @@ from levels.maze_level import MazeLevel
 from levels.jug_level import JugLevel
 from levels.tictactoe_level import TicTacToeLevel
 from levels.strategy_level import StrategyLevel
+from levels.integration_level import IntegrationLevel
 
 class GameState:
     def __init__(self, game_engine, asset_manager):
@@ -82,8 +83,8 @@ class PlayState(GameState):
             MAZE_LEVEL: MazeLevel(game_engine, asset_manager),
             WATER_JUG_LEVEL: JugLevel(game_engine, asset_manager),
             TICTACTOE_LEVEL: TicTacToeLevel(game_engine, asset_manager),
-            STRATEGY_LEVEL: StrategyLevel(game_engine, asset_manager)
-            # Other levels will be added later
+            STRATEGY_LEVEL: StrategyLevel(game_engine, asset_manager),
+            FINAL_LEVEL: IntegrationLevel(game_engine, asset_manager)
         }
     
     def enter(self, **kwargs):

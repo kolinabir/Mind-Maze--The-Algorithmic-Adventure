@@ -22,13 +22,13 @@ class LevelSelectScreen:
         self.title_font = pygame.font.SysFont(None, 48)
         self.desc_font = pygame.font.SysFont(None, 24)
         
-        # Define levels
+        # Define levels - unlock Final Integration level
         self.levels = [
             Level("Maze Explorer", "Navigate through a maze using BFS or DFS algorithms", True),
             Level("Water Jug Challenge", "Solve the classic water jug problem with algorithmic thinking", True),
             Level("Tic-Tac-Toe Master", "Play against an AI using the Minimax algorithm", True),
-            Level("Strategy Game", "Face a challenging opponent with Alpha-Beta pruning", True),  # Set to True to unlock
-            Level("Final Integration", "Use all algorithms in the ultimate challenge", False),
+            Level("Strategy Game", "Face a challenging opponent with Alpha-Beta pruning", True),
+            Level("Final Integration", "Master all algorithms in the ultimate challenge", True),  # Set to True to unlock
         ]
         
         # Level types mapping
