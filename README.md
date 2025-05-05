@@ -1,14 +1,26 @@
 # Mind Maze: The Algorithmic Adventure
 
 Mind Maze is a 2D puzzle game built with Pygame that features multiple algorithmic challenges including BFS, DFS, tic-tac-toe with minimax/alpha-beta pruning, and the water jug problem. The game takes players through different puzzle chambers, each showcasing a different algorithm with engaging visualizations.
+![image](https://github.com/user-attachments/assets/84320fb4-867e-498a-a6da-0f15042cf685)
+![image](https://github.com/user-attachments/assets/20d5d7f9-560e-4a4b-b6f6-9f05b8e2fd2a)
 
 ## Features
 
 - **Maze Explorer**: Navigate through procedurally generated mazes using BFS or DFS algorithms
+- ![image](https://github.com/user-attachments/assets/97a6788d-ca28-4ff6-8efb-0451ae2afc59)
+
 - **Water Jug Challenge**: Solve the classic water jug problem with interactive mechanics
-- **Tic-Tac-Toe Master**: Play against an AI opponent using the minimax algorithm
+-![image](https://github.com/user-attachments/assets/5652b4c9-7cc6-4b51-8bb5-86610ff93cb2)
+
+-
+-   **Tic-Tac-Toe Master**: Play against an AI opponent using the minimax algorithm
+-   ![image](https://github.com/user-attachments/assets/a8d9f5a5-1cdd-4f6c-90ba-a2d0806438b3)
+
 - **Strategy Game**: Face a challenging opponent with alpha-beta pruning
+- ![image](https://github.com/user-attachments/assets/05a9b833-5895-42f4-872d-a2923aab92f1)
+
 - **Final Integration**: A comprehensive challenge combining all previous algorithms
+![image](https://github.com/user-attachments/assets/0054dc65-5798-4337-ad1a-5ebe37c269d5)
 
 ## Installation
 
